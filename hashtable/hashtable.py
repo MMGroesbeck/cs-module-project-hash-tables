@@ -86,7 +86,7 @@ class HashTable:
         return self.fnv1(key) % self.capacity
         # return self.djb2(key) % self.capacity
 
-    def put(self, key, value):
+    def put(self, key, value, resizing=False):
         """
         Store the value with the given key.
 
@@ -105,10 +105,14 @@ class HashTable:
             else:
                 self.entries += 1
                 list_item.next = HashTableEntry(key,value)
+                if resizing == False:
+                    self.resize_check()
                 return
         else:
             self.entries += 1
             self.data_store[key_hash] = HashTableEntry(key,value)
+            if resizing == False:
+                self.resize_check()
             return
 
 
@@ -126,6 +130,7 @@ class HashTable:
             if list_item.key == key:
                 self.data_store[key_hash] = list_item.next
                 self.entries -= 1
+                self.resize_check()
                 return
             else:
                 searching = True
@@ -135,6 +140,7 @@ class HashTable:
                     elif list_item.next.key == key:
                         list_item.next = list_item.next.next
                         self.entries -= 1
+                        self.resize_check()
                         return
                     else:
                         list_item = list_item.next
@@ -175,10 +181,17 @@ class HashTable:
             if self.data_store[i]:
                 list_item = self.data_store[i]
                 while list_item:
-                    new_table.put(list_item.key, list_item.value)
+                    new_table.put(list_item.key, list_item.value, True)
                     list_item = list_item.next
         self.data_store = new_table.data_store
         self.capacity = new_capacity
+    
+    def resize_check(self):
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+            return
+        elif self.get_load_factor() < 0.2 and self.capacity > MIN_CAPACITY:
+            self.resize(max(int(self.capacity / 2), MIN_CAPACITY))
 
 if __name__ == "__main__":
     ht = HashTable(8)
