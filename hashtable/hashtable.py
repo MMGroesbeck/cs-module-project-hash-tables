@@ -128,26 +128,29 @@ class HashTable:
         if self.data_store[key_hash]:
             list_item = self.data_store[key_hash]
             if list_item.key == key:
+                val = list_item.value
                 self.data_store[key_hash] = list_item.next
                 self.entries -= 1
                 self.resize_check()
-                return
+                return val
             else:
                 searching = True
                 while searching:
                     if list_item.next == None:
                         searching = False
                     elif list_item.next.key == key:
+                        val = list_item.next.value
                         list_item.next = list_item.next.next
                         self.entries -= 1
                         self.resize_check()
-                        return
+                        return val
                     else:
                         list_item = list_item.next
                 print("Key not found.")
-                return
+                return None
         else:
             print("Key not found!")
+            return None
 
     def get(self, key):
         """
