@@ -1,8 +1,15 @@
 # Your code here
+lookup = {}
 
 
 def expensive_seq(x, y, z):
     # Your code here
+    if (x,y,z) not in lookup:
+        if x <= 0:
+            lookup[(x,y,z)] = y+z
+        else:
+            lookup[(x,y,z)] = sum(expensive_seq(x-i, y+i, z*i) for i in range(1,4))
+    return lookup[(x,y,z)]
 
 
 
