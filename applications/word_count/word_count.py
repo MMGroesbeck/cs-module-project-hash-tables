@@ -1,6 +1,18 @@
 def word_count(s):
     # Your code here
-
+    ignore = list('":;,.-+=/\|[]}{()*^&')
+    words = {}
+    filtered = ""
+    for char in s:
+        if char not in ignore:
+            filtered = filtered + char
+    for word in filtered.split():
+        lower = word.casefold()
+        if lower in words:
+            words[lower] += 1
+        else:
+            words[lower] = 1
+    return words
 
 
 if __name__ == "__main__":
